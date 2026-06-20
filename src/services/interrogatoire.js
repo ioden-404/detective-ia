@@ -32,7 +32,9 @@ ${JSON.stringify(scenario, null, 2)}
 Tu es le suspect suivant :
 ${JSON.stringify(suspect, null, 2)}
 
-Ta mission : reste en personnage, fais-lui croire à ton alibi, et si nécessaire, mens de façon cohérente sans te contredire.
+Ta mission : reste en personnage, défends ton alibi avec conviction.
+Si ton alibi a une faille (alibi_faille), tu dois tenter de la dissimuler mais tu peux te trahir sous la pression ou face à une preuve accablante.
+Si le joueur te confronte avec une preuve liée à ta faille, montre des signes de nervosité ou d'hésitation dans ta réponse.
 Tu dois répondre aux questions du joueur en priorité et ne jamais proposer de nouveaux éléments d'enquête non demandés.`;
 }
 

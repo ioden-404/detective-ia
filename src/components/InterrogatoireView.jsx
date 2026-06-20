@@ -37,11 +37,9 @@ export default function InterrogatoireView({ scenario, suspects, evidences, sele
                   <span className="profile-label">Mobile</span>
                   <span className="profile-value">{selectedSuspect.mobile || '—'}</span>
                 </div>
-                <div className="profile-row">
-                  <span className="profile-label">Alibi</span>
-                  <span className={`profile-value alibi-${selectedSuspect.alibi_valide ? 'valid' : 'suspect'}`}>
-                    {selectedSuspect.alibi_valide ? 'Vérifié' : 'Non vérifié'}
-                  </span>
+                <div className="profile-row profile-row-alibi">
+                  <span className="profile-label">Alibi déclaré</span>
+                  <span className="profile-value">{selectedSuspect.alibi || '—'}</span>
                 </div>
               </div>
             )}

@@ -13,20 +13,28 @@ Ne coupe pas la réponse : génère une seule réponse JSON complète et valide.
 
 Génère un scénario complet avec :
 - Le crime (lieu, heure, victime, description en français)
-- 4 suspects (nom français, profession, mobile, alibi valide ou non, secret caché)
+- 4 suspects avec chacun un alibi textuel et une faille potentielle
 - 6 pièces à conviction (type, emoji, titre, description immersive en français)
 - Un identifiant coupable_id qui n'est jamais affiché directement
+
+RÈGLES CRUCIALES POUR LES ALIBIS :
+- Chaque suspect a un champ "alibi" (ce qu'il prétend) et un champ "alibi_faille" (la contradiction ou le mensonge dans son alibi, ou null si l'alibi est solide).
+- AU MOINS 2 suspects sur 4 doivent avoir une faille dans leur alibi (alibi_faille non null).
+- Le coupable PEUT avoir un alibi qui semble solide en surface mais dont la faille est subtile et liée aux preuves.
+- Un innocent PEUT avoir un alibi douteux (fausse piste).
+- Les failles doivent être découvrables via les preuves ou l'interrogatoire, pas évidentes.
 
 Structure finale attendue :
 {
   "crime": {"lieu": "...", "heure": "...", "victime": "...", "description": "..."},
-  "suspects": [{"id": "s1", "nom": "...", "profession": "...", "mobile": "...", "alibi_valide": true|false, "secret": "..."}],
+  "suspects": [{"id": "s1", "nom": "...", "profession": "...", "mobile": "...", "alibi": "...", "alibi_faille": "..." ou null, "secret": "..."}],
   "preuves": [{"id": "p1", "type": "...", "emoji": "...", "titre": "...", "description": "..."}],
   "coupable_id": "sX"
 }
 
 Utilise exactement 4 suspects et exactement 6 pièces à conviction.
-Le scénario doit être cohérent, crédible et contenir des fausses pistes réalistes.`;
+Le scénario doit être cohérent, crédible et contenir des fausses pistes réalistes.
+Le joueur ne doit PAS pouvoir deviner le coupable juste en regardant les alibis.`;
 
 async function fetchScenarioFromGemini() {
   const prompt = `${systemPrompt}`;
@@ -202,8 +210,8 @@ function validateScenario(scenario) {
   }
 
   suspects.forEach((suspect, index) => {
-    if (!suspect?.id || !suspect?.nom || !suspect?.profession || typeof suspect.alibi_valide !== 'boolean' || !suspect?.secret) {
-      throw new Error(`Le suspect #${index + 1} doit contenir id, nom, profession, alibi_valide et secret.`);
+    if (!suspect?.id || !suspect?.nom || !suspect?.profession || !suspect?.alibi || !suspect?.secret) {
+      throw new Error(`Le suspect #${index + 1} doit contenir id, nom, profession, alibi et secret.`);
     }
   });
 
