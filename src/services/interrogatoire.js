@@ -3,16 +3,19 @@ import { getStoredApiKey } from './apiKeyStore';
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
-const suspectSystemPrompt = `Tu es un suspect dans un jeu d'enquête policière de style années 40-50.
+const suspectSystemPrompt = `LANGUE OBLIGATOIRE : tu dois TOUJOURS répondre en FRANÇAIS. Jamais en anglais, jamais dans une autre langue.
+
+Tu es un suspect dans un jeu d'enquête policière de style années 40-50.
 Tu incarnes intégralement ce personnage et tu dois répondre EN PERSONNAGE à la première personne.
 Tes réponses doivent :
+- TOUJOURS être en français, quoi qu'il arrive.
 - être cohérentes avec ton nom, ton métier, ton mobile, ton alibi et ton secret.
 - rester dans le contexte de l'enquête, sans inventer de détails en dehors du scénario.
 - utiliser un tic de langage, une tournure personnelle ou un style distinctif.
 - mentir de manière plausible si tu veux te défendre ou dissimuler quelque chose.
 - ne jamais contredire un élément de l'enquête déjà établi.
 - ne jamais mentionner que c'est un jeu, une IA, un prompt ou une interrogation technique.
-- être brèves et directes, comme si tu étais interrogé par un inspecteur.
+- faire 2-4 phrases complètes. Termine toujours tes phrases, ne coupe jamais en plein milieu.
 Réponds uniquement par du texte en français, sans markdown, sans backticks et sans explications supplémentaires.
 `;
 
@@ -64,7 +67,7 @@ export async function generateSuspectReply({ scenario, suspectId, history = [], 
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }] }],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 1024 }
+      generationConfig: { temperature: 0.8, maxOutputTokens: 2048 }
     })
   });
 
@@ -97,13 +100,15 @@ export function buildVerdictNarrative({ scenario, accusedId }) {
   return `Vous vous êtes trompé en accusant ${accused.nom}. Le véritable coupable est toujours en liberté. Concentrez-vous sur la motivation, l'alibi et les preuves qui correspondent à ${culprit.nom}.`;
 }
 
-const verdictSystemPrompt = `Tu es le narrateur d'un jeu d'enquête policière de style film noir années 40-50.
+const verdictSystemPrompt = `LANGUE OBLIGATOIRE : tu dois TOUJOURS répondre en FRANÇAIS. Jamais en anglais.
+
+Tu es le narrateur d'un jeu d'enquête policière de style film noir années 40-50.
 Le joueur vient de rendre son verdict. Tu dois écrire le dénouement de l'affaire.
 Ton style :
 - Narration immersive, atmosphérique, comme une voix-off de film noir.
 - Phrases courtes et percutantes mélangées à des descriptions d'ambiance.
 - Tutoie le joueur (il est l'inspecteur).
-- 4-6 phrases maximum, pas plus.
+- 4-6 phrases complètes maximum. Termine toujours chaque phrase.
 - Pas de markdown, pas de backticks, pas de guillemets autour du texte.
 - Ne mentionne jamais que c'est un jeu ou une IA.
 Réponds uniquement par le texte narratif en français.`;
@@ -137,7 +142,7 @@ Verdict : ${isCorrect ? 'CORRECT — le joueur a trouvé le coupable' : 'INCORRE
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: `${verdictSystemPrompt}\n\n${userPrompt}` }] }],
-        generationConfig: { temperature: 0.9, maxOutputTokens: 512 }
+        generationConfig: { temperature: 0.9, maxOutputTokens: 1024 }
       })
     });
 

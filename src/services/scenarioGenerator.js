@@ -3,16 +3,18 @@ import { getStoredApiKey } from './apiKeyStore';
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
-const systemPrompt = `Tu es un générateur de scénarios pour un jeu d'enquête mobile.
+const systemPrompt = `LANGUE OBLIGATOIRE : tout le contenu JSON doit être en FRANÇAIS. Tous les noms, descriptions, mobiles, alibis, secrets doivent être en français.
+
+Tu es un générateur de scénarios pour un jeu d'enquête mobile.
 Réponds UNIQUEMENT par un objet JSON valide.
 Ne fournis aucun texte explicatif, aucune phrase hors du JSON, aucun markdown ni backticks.
 Le texte doit commencer par '{' et se terminer par '}'.
 Ne coupe pas la réponse : génère une seule réponse JSON complète et valide.
 
 Génère un scénario complet avec :
-- Le crime (lieu, heure, victime, description)
-- 4 suspects (nom, profession, mobile, alibi valide ou non, secret caché)
-- 6 pièces à conviction (type, emoji, titre, description immersive)
+- Le crime (lieu, heure, victime, description en français)
+- 4 suspects (nom français, profession, mobile, alibi valide ou non, secret caché)
+- 6 pièces à conviction (type, emoji, titre, description immersive en français)
 - Un identifiant coupable_id qui n'est jamais affiché directement
 
 Structure finale attendue :
