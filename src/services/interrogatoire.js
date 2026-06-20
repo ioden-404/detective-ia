@@ -1,4 +1,4 @@
-// Service d'interrogatoire et de verdict pour l'interface
+import { getStoredApiKey } from './apiKeyStore';
 
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
@@ -17,7 +17,7 @@ Réponds uniquement par du texte en français, sans markdown, sans backticks et 
 `;
 
 function getApiKey() {
-  return (typeof process !== 'undefined' && process?.env?.VITE_GEMINI_API_KEY) ||
+  return getStoredApiKey() ||
     (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY);
 }
 

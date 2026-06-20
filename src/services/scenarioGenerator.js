@@ -1,7 +1,5 @@
-// Service de génération de scénario via l'API Google Gemini
+import { getStoredApiKey } from './apiKeyStore';
 
-// Le modèle gemini-1.5-flash n'est pas disponible pour v1beta/generateContent
-// sur cette clé/API ; nous utilisons le modèle Gemini Flash disponible.
 const GEMINI_URL =
   'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
@@ -30,8 +28,7 @@ Le scénario doit être cohérent, crédible et contenir des fausses pistes réa
 
 async function fetchScenarioFromGemini() {
   const prompt = `${systemPrompt}`;
-  const apiKey =
-    (typeof process !== 'undefined' && process?.env?.VITE_GEMINI_API_KEY) ||
+  const apiKey = getStoredApiKey() ||
     (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY);
 
   if (!apiKey) {
