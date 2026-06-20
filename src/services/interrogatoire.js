@@ -35,7 +35,11 @@ ${JSON.stringify(suspect, null, 2)}
 Ta mission : reste en personnage, défends ton alibi avec conviction.
 Si ton alibi a une faille (alibi_faille), tu dois tenter de la dissimuler mais tu peux te trahir sous la pression ou face à une preuve accablante.
 Si le joueur te confronte avec une preuve liée à ta faille, montre des signes de nervosité ou d'hésitation dans ta réponse.
-Tu dois répondre aux questions du joueur en priorité et ne jamais proposer de nouveaux éléments d'enquête non demandés.`;
+Tu dois répondre aux questions du joueur en priorité et ne jamais proposer de nouveaux éléments d'enquête non demandés.
+
+IMPORTANT — Ne parle de ton alibi (où tu étais, ce que tu faisais au moment du crime) QUE si le joueur te pose une question directement liée (où tu étais, ton emploi du temps, ce que tu faisais cette nuit-là, etc.). Si la question porte sur autre chose, ne mentionne pas ton alibi spontanément.
+
+Quand ta réponse mentionne ton alibi (où tu étais au moment du crime), ajoute exactement le marqueur [ALIBI] à la toute fin de ta réponse, après le point final. Ne l'ajoute que si tu parles vraiment de ton alibi dans ta réponse.`;
 }
 
 function buildUserPrompt(history, message) {
@@ -79,12 +83,15 @@ export async function generateSuspectReply({ scenario, suspectId, history = [], 
   }
 
   const data = await response.json();
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) {
+  const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!raw) {
     throw new Error("Réponse Gemini invalide pour l'interrogatoire.");
   }
 
-  return text.trim();
+  const alibiMentioned = raw.includes('[ALIBI]');
+  const text = raw.replace(/\s*\[ALIBI\]\s*/g, '').trim();
+
+  return { text, alibiMentioned };
 }
 
 export function buildVerdictNarrative({ scenario, accusedId }) {

@@ -26,15 +26,21 @@ RÈGLES CRUCIALES POUR LES ALIBIS :
 - Les failles doivent être découvrables via les preuves ou l'interrogatoire, pas évidentes.
 - Il doit être IMPOSSIBLE de deviner le coupable en comparant les alibis. Seul le croisement des preuves, mobiles et interrogatoires permet de conclure.
 
+RÈGLES POUR LES PREUVES :
+- Parmi les 8 preuves, AU MOINS 3 doivent être directement liées aux alibis des suspects.
+- Ces preuves-alibis doivent permettre au joueur de vérifier ou contredire ce que les suspects prétendent (ex: un ticket de caisse, une caméra de surveillance, un témoignage de voisin, un relevé téléphonique, un reçu de parking, etc.).
+- Chaque preuve doit avoir un champ "lie_a" indiquant l'id du suspect concerné (ou null si la preuve est générale).
+- Les preuves ne doivent pas dire explicitement "ceci prouve que X ment" — elles doivent donner un indice que le joueur doit recouper avec l'alibi du suspect.
+
 Structure finale attendue :
 {
   "crime": {"lieu": "...", "heure": "...", "victime": "...", "description": "..."},
   "suspects": [{"id": "s1", "nom": "...", "profession": "...", "mobile": "...", "alibi": "...", "alibi_faille": "..." ou null, "secret": "..."}],
-  "preuves": [{"id": "p1", "type": "...", "emoji": "...", "titre": "...", "description": "..."}],
+  "preuves": [{"id": "p1", "type": "...", "emoji": "...", "titre": "...", "description": "...", "lie_a": "s1" ou null}],
   "coupable_id": "sX"
 }
 
-Utilise exactement 4 suspects et exactement 6 pièces à conviction.
+Utilise exactement 4 suspects et exactement 8 pièces à conviction.
 Le scénario doit être cohérent, crédible et contenir des fausses pistes réalistes.
 Le joueur ne doit PAS pouvoir deviner le coupable juste en regardant les alibis.`;
 
@@ -204,8 +210,8 @@ function validateScenario(scenario) {
   if (!Array.isArray(suspects) || suspects.length !== 4) {
     throw new Error('Le scénario doit contenir exactement 4 suspects.');
   }
-  if (!Array.isArray(preuves) || preuves.length !== 6) {
-    throw new Error('Le scénario doit contenir exactement 6 pièces à conviction.');
+  if (!Array.isArray(preuves) || preuves.length < 6) {
+    throw new Error('Le scénario doit contenir au moins 6 pièces à conviction.');
   }
   if (typeof coupable_id !== 'string' || !coupable_id) {
     throw new Error('Le scénario doit contenir un coupable_id valide.');

@@ -81,11 +81,10 @@ function App() {
     setIsReplying(true);
 
     try {
-      const reply = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message });
+      const { text: reply, alibiMentioned } = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message });
       const nextHistory = [...pendingHistory, { role: 'suspect', text: reply }];
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: nextHistory }));
-      const playerMessages = nextHistory.filter((m) => m.role === 'player').length;
-      if (playerMessages >= 3) {
+      if (alibiMentioned) {
         setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
       }
     } catch (err) {
@@ -139,16 +138,11 @@ function App() {
     setIsReplying(true);
 
     try {
-      const reply = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message: fullMessage });
+      const { text: reply, alibiMentioned } = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message: fullMessage });
       const nextHistory = [...pendingHistory, { role: 'suspect', text: reply }];
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: nextHistory }));
-      if (evidence) {
+      if (alibiMentioned) {
         setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
-      } else {
-        const playerMessages = nextHistory.filter((m) => m.role === 'player').length;
-        if (playerMessages >= 3) {
-          setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
-        }
       }
     } catch (err) {
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: [...pendingHistory, { role: 'suspect', text: 'Le suspect ne répond pas pour le moment. Réessaie.' }] }));
