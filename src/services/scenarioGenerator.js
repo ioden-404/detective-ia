@@ -19,10 +19,12 @@ Génère un scénario complet avec :
 
 RÈGLES CRUCIALES POUR LES ALIBIS :
 - Chaque suspect a un champ "alibi" (ce qu'il prétend) et un champ "alibi_faille" (la contradiction ou le mensonge dans son alibi, ou null si l'alibi est solide).
-- AU MOINS 2 suspects sur 4 doivent avoir une faille dans leur alibi (alibi_faille non null).
-- Le coupable PEUT avoir un alibi qui semble solide en surface mais dont la faille est subtile et liée aux preuves.
-- Un innocent PEUT avoir un alibi douteux (fausse piste).
+- TOUS les 4 suspects doivent avoir un alibi crédible en surface. Aucun suspect ne doit être "sans alibi".
+- AU MOINS 3 suspects sur 4 doivent avoir une faille dans leur alibi (alibi_faille non null), y compris des innocents.
+- Le coupable doit TOUJOURS avoir un alibi qui semble solide en surface mais dont la faille est subtile et liée aux preuves.
+- Les innocents doivent aussi avoir des failles dans leurs alibis (fausses pistes) pour brouiller les pistes.
 - Les failles doivent être découvrables via les preuves ou l'interrogatoire, pas évidentes.
+- Il doit être IMPOSSIBLE de deviner le coupable en comparant les alibis. Seul le croisement des preuves, mobiles et interrogatoires permet de conclure.
 
 Structure finale attendue :
 {

@@ -813,6 +813,10 @@ button {
   font-style: italic;
 }
 
+.profile-value.alibi-unknown {
+  color: #a89070;
+}
+
 .suspect-choices {
   margin-top: 28px;
   display: grid;

@@ -23,6 +23,7 @@ function App() {
   const [selectedEvidence, setSelectedEvidence] = useState(null);
   const [selectedSuspect, setSelectedSuspect] = useState(null);
   const [chatHistory, setChatHistory] = useState({});
+  const [alibiRevealed, setAlibiRevealed] = useState({});
   const [isReplying, setIsReplying] = useState(false);
   const [accusation, setAccusation] = useState(null);
   const [notes, setNotes] = useState('');
@@ -83,6 +84,10 @@ function App() {
       const reply = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message });
       const nextHistory = [...pendingHistory, { role: 'suspect', text: reply }];
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: nextHistory }));
+      const playerMessages = nextHistory.filter((m) => m.role === 'player').length;
+      if (playerMessages >= 3) {
+        setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
+      }
     } catch (err) {
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: [...pendingHistory, { role: 'suspect', text: 'Le suspect ne répond pas pour le moment. Réessaie.' }] }));
     } finally {
@@ -111,6 +116,7 @@ function App() {
     setSelectedEvidence(null);
     setSelectedSuspect(null);
     setChatHistory({});
+    setAlibiRevealed({});
     setAccusation(null);
     setNotes('');
     setVerdictNarrative('');
@@ -136,6 +142,14 @@ function App() {
       const reply = await generateSuspectReply({ scenario, suspectId: selectedSuspect.id, history: currentHistory, message: fullMessage });
       const nextHistory = [...pendingHistory, { role: 'suspect', text: reply }];
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: nextHistory }));
+      if (evidence) {
+        setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
+      } else {
+        const playerMessages = nextHistory.filter((m) => m.role === 'player').length;
+        if (playerMessages >= 3) {
+          setAlibiRevealed((prev) => ({ ...prev, [selectedSuspect.id]: true }));
+        }
+      }
     } catch (err) {
       setChatHistory((prev) => ({ ...prev, [selectedSuspect.id]: [...pendingHistory, { role: 'suspect', text: 'Le suspect ne répond pas pour le moment. Réessaie.' }] }));
     } finally {
@@ -189,6 +203,7 @@ function App() {
               evidences={evidences}
               selectedSuspect={selectedSuspect}
               chatHistory={chatHistory[selectedSuspect?.id] || []}
+              alibiRevealed={alibiRevealed}
               isReplying={isReplying}
               onSelectSuspect={handleSelectSuspect}
               onSendMessage={handleSendMessageWithEvidence}

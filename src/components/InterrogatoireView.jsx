@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function InterrogatoireView({ scenario, suspects, evidences, selectedSuspect, chatHistory, isReplying, onSelectSuspect, onSendMessage, onAccuse, onBack }) {
+export default function InterrogatoireView({ scenario, suspects, evidences, selectedSuspect, chatHistory, alibiRevealed, isReplying, onSelectSuspect, onSendMessage, onAccuse, onBack }) {
   const [message, setMessage] = useState('');
   const [selectedEvidence, setSelectedEvidence] = useState(null);
 
@@ -38,8 +38,12 @@ export default function InterrogatoireView({ scenario, suspects, evidences, sele
                   <span className="profile-value">{selectedSuspect.mobile || '—'}</span>
                 </div>
                 <div className="profile-row profile-row-alibi">
-                  <span className="profile-label">Alibi déclaré</span>
-                  <span className="profile-value">{selectedSuspect.alibi || '—'}</span>
+                  <span className="profile-label">Alibi</span>
+                  {alibiRevealed[selectedSuspect.id] ? (
+                    <span className="profile-value">{selectedSuspect.alibi}</span>
+                  ) : (
+                    <span className="profile-value alibi-unknown">Interroge ce suspect pour en savoir plus…</span>
+                  )}
                 </div>
               </div>
             )}
